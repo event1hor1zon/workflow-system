@@ -122,10 +122,6 @@ const handleSubmit = async () => {
       type: form.type,
       priority: form.priority,
       description: form.description,
-      creatorId: userStore.user.value?.id,
-      creatorName: userStore.user.value?.name,
-      countyId: userStore.user.value?.countyId,
-      countyName: userStore.user.value?.countyName,
     };
 
     await ordersApi.create(orderData);

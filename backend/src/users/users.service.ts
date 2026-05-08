@@ -4,6 +4,16 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User, UserRole } from './entities/user.entity';
 
+const PUBLIC_USER_FIELDS: (keyof User)[] = [
+  'id',
+  'username',
+  'name',
+  'role',
+  'countyId',
+  'departmentId',
+  'createTime',
+];
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -14,7 +24,7 @@ export class UsersService {
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({
       where: { isActive: true },
-      select: ['id', 'username', 'name', 'role', 'countyId', 'departmentId', 'createTime'],
+      select: PUBLIC_USER_FIELDS,
     });
   }
 
@@ -30,37 +40,55 @@ export class UsersService {
     });
   }
 
+  async findPublicById(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { id, isActive: true },
+      select: PUBLIC_USER_FIELDS,
+    });
+  }
+
   async findLeaders(): Promise<User[]> {
     return this.usersRepository.find({
       where: [
         { role: UserRole.TOP_LEADER, isActive: true },
         { role: UserRole.DEPARTMENT_HEAD, isActive: true },
       ],
-      select: ['id', 'username', 'name', 'role', 'departmentId'],
+      select: PUBLIC_USER_FIELDS,
+    });
+  }
+
+  async findTopLeaders(): Promise<User[]> {
+    return this.usersRepository.find({
+      where: { role: UserRole.TOP_LEADER, isActive: true },
+      select: PUBLIC_USER_FIELDS,
     });
   }
 
   async findByCounty(countyId: number): Promise<User[]> {
     return this.usersRepository.find({
       where: { countyId, isActive: true },
+      select: PUBLIC_USER_FIELDS,
     });
   }
 
   async findByDepartment(departmentId: number): Promise<User[]> {
     return this.usersRepository.find({
       where: { departmentId, isActive: true },
+      select: PUBLIC_USER_FIELDS,
     });
   }
 
   async findCountyHandlers(countyId: number): Promise<User[]> {
     return this.usersRepository.find({
       where: { countyId, role: UserRole.COUNTY_HANDLER, isActive: true },
+      select: PUBLIC_USER_FIELDS,
     });
   }
 
   async findDepartmentHeads(departmentId: number): Promise<User[]> {
     return this.usersRepository.find({
       where: { departmentId, role: UserRole.DEPARTMENT_HEAD, isActive: true },
+      select: PUBLIC_USER_FIELDS,
     });
   }
 

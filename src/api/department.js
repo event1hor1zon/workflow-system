@@ -12,6 +12,10 @@ export const departmentsApi = {
     return api.get('/departments/three');
   },
 
+  getTransferable() {
+    return api.get('/departments/transferable');
+  },
+
   // 获取部门详情
   getById(id) {
     return api.get(`/departments/${id}`);

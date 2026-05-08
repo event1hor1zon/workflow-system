@@ -14,6 +14,10 @@ import { OrderApproval } from './orders/entities/order-approval.entity';
 import { DataSource } from 'typeorm';
 import { SeedService } from './seed.service';
 
+const shouldSynchronize = process.env.DB_SYNCHRONIZE !== 'false';
+const shouldLogSql = process.env.DB_LOGGING === 'true' || process.env.NODE_ENV === 'development';
+const shouldSeed = process.env.SEED_DATA !== 'false';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -24,8 +28,8 @@ import { SeedService } from './seed.service';
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_DATABASE || 'workflow_db',
       entities: [User, County, Department, Order, OrderFlow, OrderApproval],
-      synchronize: true,
-      logging: process.env.NODE_ENV === 'development',
+      synchronize: shouldSynchronize,
+      logging: shouldLogSql,
     }),
     AuthModule,
     UsersModule,
@@ -38,6 +42,10 @@ export class AppModule implements OnModuleInit {
   constructor(private dataSource: DataSource) {}
 
   async onModuleInit() {
+    if (!shouldSeed) {
+      return;
+    }
+
     // Run seed data when database is initialized
     const seedService = new SeedService(this.dataSource);
     await seedService.seed();

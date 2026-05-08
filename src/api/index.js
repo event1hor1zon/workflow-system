@@ -35,6 +35,7 @@ api.interceptors.response.use(
         // Token 过期，清除登录状态
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('workflow_react_user');
         window.location.href = '/login';
       }
       return Promise.reject(data || { message: '请求失败' });

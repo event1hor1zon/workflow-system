@@ -1,39 +1,59 @@
-/* 全局样式和 CSS 变量 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ========== 深浅主题系统 ========== */
 :root,
-[data-theme="dark"] {
-  --bg-primary: #0a0a1a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: #334155;
-  --accent: #60a5fa;
-  --accent-bg: rgba(96, 165, 250, 0.15);
-  --shadow: rgba(0, 0, 0, 0.4);
-  color-scheme: dark;
-}
-
 [data-theme="light"] {
-  --bg-primary: #f1f5f9;
-  --bg-secondary: #e2e8f0;
+  --brand-primary: #3b82f6;
+  --brand-secondary: #10b981;
+  --brand-warning: #f59e0b;
+  --brand-danger: #ef4444;
+  --brand-surface: rgba(59, 130, 246, 0.12);
+  --bg-primary: #f5f8fc;
+  --bg-surface: #ffffff;
+  --bg-panel: rgba(255, 255, 255, 0.68);
+  --bg-elevated: #e2e8f0;
   --bg-card: #ffffff;
   --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
   --text-muted: #94a3b8;
-  --border-color: #cbd5e1;
-  --accent: #2563eb;
-  --accent-bg: rgba(37, 99, 235, 0.1);
-  --shadow: rgba(0, 0, 0, 0.1);
+  --border-color: #d6e0eb;
+  --panel-border: rgba(148, 163, 184, 0.26);
+  --grid-color: rgba(15, 23, 42, 0.05);
+  --accent: #3b82f6;
+  --accent-bg: rgba(59, 130, 246, 0.12);
+  --shadow-soft: rgba(15, 23, 42, 0.08);
+  --shadow-strong: rgba(15, 23, 42, 0.12);
   color-scheme: light;
 }
 
-/* 基础样式重置 */
-* {
-  margin: 0;
-  padding: 0;
+[data-theme="dark"] {
+  --brand-primary: #60a5fa;
+  --brand-secondary: #34d399;
+  --brand-warning: #fbbf24;
+  --brand-danger: #f87171;
+  --brand-surface: rgba(96, 165, 250, 0.14);
+  --bg-primary: #09111f;
+  --bg-surface: #131b2a;
+  --bg-panel: rgba(10, 17, 31, 0.72);
+  --bg-elevated: #1e293b;
+  --bg-card: #111827;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #273449;
+  --panel-border: rgba(148, 163, 184, 0.16);
+  --grid-color: rgba(255, 255, 255, 0.06);
+  --accent: #60a5fa;
+  --accent-bg: rgba(96, 165, 250, 0.14);
+  --shadow-soft: rgba(2, 8, 23, 0.36);
+  --shadow-strong: rgba(2, 8, 23, 0.48);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -44,19 +64,38 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: var(--bg-primary);
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   color: var(--text-primary);
   line-height: 1.5;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 30%),
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 26%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 92%, white 8%), var(--bg-primary));
+}
+
+#app {
   min-height: 100vh;
 }
 
-/* ========== 通用表单样式 ========== */
+body,
+button,
 input,
 select,
-textarea,
-button {
+textarea {
   font-family: inherit;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 input:focus,
@@ -65,56 +104,60 @@ textarea:focus {
   outline: none;
 }
 
-/* ========== 通用按钮样式 ========== */
-button {
-  cursor: pointer;
-  border: none;
-  background: transparent;
+::selection {
+  background: rgba(59, 130, 246, 0.16);
 }
 
-/* ========== 滚动条样式 ========== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-muted) 55%, transparent);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: color-mix(in srgb, var(--text-tertiary) 72%, transparent);
 }
 
-/* ========== 浅色模式增强 ========== */
-[data-theme="light"] .lbl,
-[data-theme="light"] .note {
-  color: #475569 !important;
+.glass-panel {
+  background: color-mix(in srgb, var(--bg-surface) 80%, transparent);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 24px 60px var(--shadow-soft);
+  backdrop-filter: blur(24px);
 }
 
-[data-theme="light"] .topo-node .node-name {
-  color: #0f172a !important;
+.surface-card {
+  background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 16px 36px var(--shadow-soft);
 }
 
-[data-theme="light"] .progress-fill {
-  background: #3b82f6 !important;
+.mono-text {
+  font-family: "JetBrains Mono", "SFMono-Regular", "Consolas", monospace;
 }
 
-[data-theme="light"] .progress-bar {
-  background: #cbd5e1 !important;
-}
-
-/* ========== 拓扑图动画 ========== */
 @keyframes flow-dot {
-  0% { stroke-dashoffset: 48; opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
+  0% {
+    stroke-dashoffset: 48;
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
 }
 
 .topo-line-animated {
@@ -125,10 +168,14 @@ button {
   filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.8));
 }
 
-/* ========== 节点脉冲动画 ========== */
 @keyframes node-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
-  50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+  }
 }
 
 .topo-node.current {
@@ -136,25 +183,20 @@ button {
 }
 
 @keyframes ripple-flow {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
 }
 
 .node-ripple {
   animation: ripple-flow 1.5s ease-out infinite;
 }
 
-/* ========== 工具类 ========== */
-.text-primary { color: var(--text-primary); }
-.text-secondary { color: var(--text-secondary); }
-.text-muted { color: var(--text-muted); }
-.text-accent { color: var(--accent); }
-
-.bg-primary { background: var(--bg-primary); }
-.bg-secondary { background: var(--bg-secondary); }
-.bg-card { background: var(--bg-card); }
-
-/* ========== 响应式基础 ========== */
 @media (max-width: 768px) {
   html {
     font-size: 14px;
@@ -163,6 +205,6 @@ button {
 
 @media (max-width: 480px) {
   html {
-    font-size: 12px;
+    font-size: 13px;
   }
 }

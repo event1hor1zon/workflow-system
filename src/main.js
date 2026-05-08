@@ -17,5 +17,5 @@ const savedTheme = localStorage.getItem('sop-theme');
 if (savedTheme) {
   document.documentElement.setAttribute('data-theme', savedTheme);
 } else {
-  document.documentElement.setAttribute('data-theme', 'dark');
+  document.documentElement.setAttribute('data-theme', 'light');
 }

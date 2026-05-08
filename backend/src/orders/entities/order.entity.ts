@@ -8,16 +8,41 @@ import {
 
 export enum OrderStatus {
   PENDING = 'pending', // 待处理
-  PROCESSED = 'processed', // 已处理/已流转
-  PENDING_APPROVAL = 'pending_approval', // 待审批
-  RESOLVED = 'resolved', // 已解决
+  PROCESSING = 'processing', // 已分配部门并处理中
+  WAITING_CONFIRM = 'waiting_confirm', // 待确认
+  COMPLETED = 'completed', // 已完成
   REJECTED = 'rejected', // 已退回
 }
 
-export enum EventType {
+export enum OrderPriority {
   NORMAL = 'normal', // 普通
   URGENT = 'urgent', // 紧急
   CRITICAL = 'critical', // 重大
+}
+
+export type OrderAttachmentKind = 'issue' | 'proof';
+
+export interface OrderAttachment {
+  id: string;
+  kind: OrderAttachmentKind;
+  originalName: string;
+  storedName: string;
+  mimeType: string;
+  size: number;
+  url: string;
+  uploadedById: number;
+  uploadedByName: string;
+  uploadedAt: string;
+}
+
+export interface OrderDepartmentTask {
+  departmentId: number;
+  departmentName: string;
+  completed: boolean;
+  completedById: number | null;
+  completedByName: string | null;
+  completedAt: string | null;
+  comment: string | null;
 }
 
 @Entity('orders')
@@ -28,6 +53,9 @@ export class Order {
   @Column({ length: 255 })
   title: string;
 
+  @Column({ length: 50, default: 'other' })
+  type: string;
+
   @Column({ type: 'text', nullable: true })
   description: string;
 
@@ -37,17 +65,26 @@ export class Order {
   @Column({ name: 'creator_county_id' })
   creatorCountyId: number;
 
-  @Column({ name: 'creator_department_id' })
-  creatorDepartmentId: number;
+  @Column({ name: 'creator_department_id', nullable: true })
+  creatorDepartmentId: number | null;
 
   @Column({ name: 'current_handler_id', nullable: true })
-  currentHandlerId: number;
+  currentHandlerId: number | null;
 
   @Column({ name: 'current_county_id', nullable: true })
-  currentCountyId: number;
+  currentCountyId: number | null;
 
   @Column({ name: 'current_department_id', nullable: true })
-  currentDepartmentId: number;
+  currentDepartmentId: number | null;
+
+  @Column({ name: 'assigned_department_ids', type: 'jsonb', default: () => "'[]'" })
+  assignedDepartmentIds: number[];
+
+  @Column({ name: 'department_tasks', type: 'jsonb', default: () => "'[]'" })
+  departmentTasks: OrderDepartmentTask[];
+
+  @Column({ name: 'attachments', type: 'jsonb', default: () => "'[]'" })
+  attachments: OrderAttachment[];
 
   @Column({
     type: 'enum',
@@ -57,12 +94,11 @@ export class Order {
   status: OrderStatus;
 
   @Column({
-    name: 'event_type',
     type: 'enum',
-    enum: EventType,
-    default: EventType.NORMAL,
+    enum: OrderPriority,
+    default: OrderPriority.NORMAL,
   })
-  eventType: EventType;
+  priority: OrderPriority;
 
   @Column({ name: 'creator_confirmed', default: false })
   creatorConfirmed: boolean;

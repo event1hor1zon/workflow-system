@@ -25,9 +25,9 @@ export const ROLES = {
 
 // 角色显示名称
 export const ROLE_NAMES = {
-  [ROLES.USER]: '普通员工',
-  [ROLES.COUNTY_HANDLER]: '县级经办人',
-  [ROLES.DEPARTMENT_HEAD]: '部门负责人',
+  [ROLES.USER]: '公司员工',
+  [ROLES.COUNTY_HANDLER]: '公司网络部负责人',
+  [ROLES.DEPARTMENT_HEAD]: '市级部门负责人',
   [ROLES.TOP_LEADER]: '最高领导',
   [ROLES.ADMIN]: '管理员',
 };
@@ -57,6 +57,10 @@ export const userStore = {
   canTransferOrders: computed(() =>
     state.user?.role === ROLES.COUNTY_HANDLER ||
     state.user?.role === ROLES.ADMIN
+  ),
+
+  canCreateOrders: computed(() =>
+    state.isLoggedIn
   ),
 
   canProcessOrders: computed(() =>

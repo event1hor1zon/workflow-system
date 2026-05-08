@@ -50,4 +50,12 @@ export class AuthService {
       },
     };
   }
+
+  getProfile(user: Record<string, unknown>) {
+    return user;
+  }
+
+  logout() {
+    return { message: '已退出登录' };
+  }
 }

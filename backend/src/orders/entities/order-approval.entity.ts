@@ -26,6 +26,9 @@ export class OrderApproval {
   @Column({ name: 'user_id' })
   userId: number;
 
+  @Column({ name: 'approver_name', length: 100, nullable: true })
+  approverName: string | null;
+
   @Column({
     name: 'approval_type',
     type: 'enum',

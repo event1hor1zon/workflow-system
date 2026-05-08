@@ -1,11 +1,22 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { OrderPriority } from '../entities/order.entity';
 
 export class CreateOrderDto {
-  @IsNotEmpty({ message: '工单标题不能为空' })
+  @IsOptional()
   @IsString()
-  title: string;
+  @MaxLength(255)
+  title?: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  @MaxLength(50)
+  type?: string;
+
+  @IsOptional()
+  @IsEnum(OrderPriority)
+  priority?: OrderPriority;
+
+  @IsNotEmpty({ message: '工单详情不能为空' })
+  @IsString()
+  description: string;
 }

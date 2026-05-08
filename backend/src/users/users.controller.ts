@@ -19,6 +19,6 @@ export class UsersController {
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return this.usersService.findById(parseInt(id));
+    return this.usersService.findPublicById(parseInt(id, 10));
   }
 }

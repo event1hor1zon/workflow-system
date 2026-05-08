@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/Login.vue';
 import Panorama from '../views/Panorama.vue';
 import OrderList from '../views/OrderList.vue';
-import OrderDetail from '../views/OrderDetail.vue';
 import userStore from '../stores/user';
 
 const routes = [
@@ -19,16 +18,18 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/orders',
-    name: 'order-list',
+    path: '/me',
+    name: 'profile-center',
     component: OrderList,
     meta: { requiresAuth: true },
   },
   {
+    path: '/orders',
+    redirect: (to) => ({ path: '/me', query: to.query }),
+  },
+  {
     path: '/orders/:id',
-    name: 'order-detail',
-    component: OrderDetail,
-    meta: { requiresAuth: true },
+    redirect: (to) => ({ path: '/me', query: { ...to.query, selected: String(to.params.id) } }),
   },
 ];
 

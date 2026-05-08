@@ -7,6 +7,11 @@ export const ordersApi = {
     return api.post('/orders', data);
   },
 
+  // 驳回后重新提交
+  resubmit(id, data) {
+    return api.patch(`/orders/${id}/resubmit`, data);
+  },
+
   // 获取工单列表
   getList(params = {}) {
     return api.get('/orders', { params });
@@ -27,7 +32,12 @@ export const ordersApi = {
     return api.get(`/orders/${id}/flows`);
   },
 
-  // 流转工单（县级经办人）
+  // 县级经办人分配部门
+  assign(id, data) {
+    return api.patch(`/orders/${id}/assign`, data);
+  },
+
+  // 部门之间流转
   transfer(id, data) {
     return api.post(`/orders/${id}/transfer`, data);
   },
@@ -35,6 +45,11 @@ export const ordersApi = {
   // 处理工单（部门负责人）
   process(id, data) {
     return api.patch(`/orders/${id}/process`, data);
+  },
+
+  // 协同部门处理完成
+  complete(id, data) {
+    return api.patch(`/orders/${id}/complete`, data);
   },
 
   // 确认结束（发起人）
@@ -45,5 +60,14 @@ export const ordersApi = {
   // 驳回工单
   reject(id, data) {
     return api.patch(`/orders/${id}/reject`, data);
+  },
+
+  // 上传附件
+  uploadAttachment(id, formData) {
+    return api.post(`/orders/${id}/attachments`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 };

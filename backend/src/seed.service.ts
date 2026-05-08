@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { County } from './counties/entities/county.entity';
-import { Department } from './departments/entities/department.entity';
+import { Department, DepartmentType } from './departments/entities/department.entity';
 import { User } from './users/entities/user.entity';
 import { UserRole } from './users/entities/user.entity';
 
@@ -29,13 +29,14 @@ export class SeedService {
       { name: 'A县', isActive: true },
       { name: 'B县', isActive: true },
       { name: 'C县', isActive: true },
+      { name: '市公司', isActive: true },
     ]);
 
     // Seed Departments
     const departments = await deptRepo.save([
-      { name: '网络部', type: 'network', isActive: true },
-      { name: '客户响应中心', type: 'maintenance', isActive: true },
-      { name: '工程建设部', type: 'engineering', isActive: true },
+      { name: '网络部', type: DepartmentType.NETWORK, isActive: true },
+      { name: '客户响应中心', type: DepartmentType.MAINTENANCE, isActive: true },
+      { name: '工程建设部', type: DepartmentType.ENGINEERING, isActive: true },
     ]);
 
     // Seed Users
@@ -48,7 +49,7 @@ export class SeedService {
         password: hashedPassword,
         name: '系统管理员',
         role: UserRole.ADMIN,
-        countyId: null,
+        countyId: counties[3].id,
         departmentId: null,
         isActive: true,
       },
@@ -58,7 +59,17 @@ export class SeedService {
         password: hashedPassword,
         name: '最高领导',
         role: UserRole.TOP_LEADER,
-        countyId: null,
+        countyId: counties[3].id,
+        departmentId: null,
+        isActive: true,
+      },
+      // 市公司经办人
+      {
+        username: 'city_network_handler',
+        password: hashedPassword,
+        name: '市公司经办人',
+        role: UserRole.COUNTY_HANDLER,
+        countyId: counties[3].id,
         departmentId: null,
         isActive: true,
       },
@@ -66,7 +77,7 @@ export class SeedService {
       {
         username: 'a_county_handler',
         password: hashedPassword,
-        name: 'A县经办人',
+        name: 'A县网络部负责人',
         role: UserRole.COUNTY_HANDLER,
         countyId: counties[0].id,
         departmentId: null,
@@ -76,7 +87,7 @@ export class SeedService {
       {
         username: 'b_county_handler',
         password: hashedPassword,
-        name: 'B县经办人',
+        name: 'B县网络部负责人',
         role: UserRole.COUNTY_HANDLER,
         countyId: counties[1].id,
         departmentId: null,
@@ -86,7 +97,7 @@ export class SeedService {
       {
         username: 'c_county_handler',
         password: hashedPassword,
-        name: 'C县经办人',
+        name: 'C县网络部负责人',
         role: UserRole.COUNTY_HANDLER,
         countyId: counties[2].id,
         departmentId: null,
@@ -96,9 +107,9 @@ export class SeedService {
       {
         username: 'network_head',
         password: hashedPassword,
-        name: '网络部负责人',
+        name: '市网络部负责人',
         role: UserRole.DEPARTMENT_HEAD,
-        countyId: null,
+        countyId: counties[3].id,
         departmentId: departments[0].id,
         isActive: true,
       },
@@ -106,9 +117,9 @@ export class SeedService {
       {
         username: 'maintenance_head',
         password: hashedPassword,
-        name: '客户响应中心负责人',
+        name: '市客户响应中心负责人',
         role: UserRole.DEPARTMENT_HEAD,
-        countyId: null,
+        countyId: counties[3].id,
         departmentId: departments[1].id,
         isActive: true,
       },
@@ -116,9 +127,9 @@ export class SeedService {
       {
         username: 'engineering_head',
         password: hashedPassword,
-        name: '工程建设部负责人',
+        name: '市工程建设部负责人',
         role: UserRole.DEPARTMENT_HEAD,
-        countyId: null,
+        countyId: counties[3].id,
         departmentId: departments[2].id,
         isActive: true,
       },
@@ -167,8 +178,9 @@ export class SeedService {
     console.log('Test accounts (password: 123456):');
     console.log('  - admin: 系统管理员');
     console.log('  - leader: 最高领导');
-    console.log('  - a_county_handler: A县经办人');
-    console.log('  - network_head: 网络部负责人');
+    console.log('  - a_county_handler: A县网络部负责人');
+    console.log('  - city_network_handler: 市公司经办人');
+    console.log('  - network_head: 市网络部负责人');
     console.log('  - user_a1: A县员工1');
   }
 }
