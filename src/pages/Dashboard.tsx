@@ -288,7 +288,7 @@ export default function Dashboard({ navigate }: DashboardProps) {
           </div>
           <div>
             <div className="text-lg font-bold font-mono">{todayActiveCount === null ? '--' : todayActiveCount.toLocaleString('zh-CN')}</div>
-            <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest leading-none">今日活跃工单</p>
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest leading-none">今日可见活跃工单</p>
           </div>
         </section>
         <section className="glass-card p-8 flex flex-row items-center gap-6 border-none shadow-sm bg-bg-surface/20">

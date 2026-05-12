@@ -109,18 +109,19 @@ const formatHistoryTime = (value?: string | Date | null) => {
 const buildCreator = (order: any, refs: ReferenceData): User => {
   const county = order.creatorCountyName || getCountyName(order.creatorCountyId, refs);
   const department = toDepartmentLabel(order.creatorDepartmentName, county);
+  const rawRole = order.creatorRole || 'user';
 
   return {
     id: order.creatorName || `U-${order.creatorId}`,
     backendId: order.creatorId,
     username: order.creatorUsername || `user-${order.creatorId}`,
     name: order.creatorName || `用户${order.creatorId}`,
-    avatar: getAvatar(order.creatorUsername, order.creatorName),
-    role: 'employee',
+    avatar: getAvatar(order.creatorUsername || rawRole, order.creatorName),
+    role: roleMap[rawRole] || 'employee',
     county,
     city: CITY_NAME,
     department,
-    rawRole: 'user',
+    rawRole,
     countyId: order.creatorCountyId,
     departmentId: order.creatorDepartmentId,
   };

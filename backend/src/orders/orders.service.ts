@@ -377,7 +377,7 @@ export class OrdersService {
     await this.addFlow(
       order.id,
       FlowAction.COMPLETE,
-      order.currentDepartmentId,
+      task.departmentId,
       null,
       null,
       null,
@@ -395,7 +395,7 @@ export class OrdersService {
       await this.addFlow(
         order.id,
         FlowAction.PROCESS,
-        order.currentDepartmentId,
+        task.departmentId,
         null,
         null,
         null,
@@ -613,6 +613,16 @@ export class OrdersService {
       ? await this.departmentsService.findById(order.currentDepartmentId)
       : null;
     const departments = await this.departmentsService.findCoreDepartments();
+    const assignedDepartmentIds = this.getAssignedDepartmentIds(order);
+    const taskDepartmentIds = Array.from(
+      new Set(
+        (Array.isArray(order.departmentTasks) ? order.departmentTasks : [])
+          .map((task) => Number(task.departmentId))
+          .filter(Number.isInteger),
+      ),
+    );
+    const routeDepartmentIds = taskDepartmentIds.length > 0 ? taskDepartmentIds : assignedDepartmentIds;
+    const routeDepartments = departments.filter((department) => routeDepartmentIds.includes(department.id));
     const flows = await this.orderFlowsRepository.find({
       where: { orderId },
       order: { createTime: 'ASC' },
@@ -641,7 +651,7 @@ export class OrdersService {
         dept: county?.name || '-',
         status: order.status === OrderStatus.PENDING ? 'current' : 'completed',
       },
-      ...departments.map((department) => ({
+      ...routeDepartments.map((department) => ({
         id: `dept-${department.id}`,
         name: department.name,
         status: this.getTopologyDepartmentStatus(order, department.id, visitedDepartmentIds),
@@ -659,18 +669,18 @@ export class OrdersService {
 
     const edges = [
       { from: 'creator', to: 'county_handler' },
-      ...departments.map((department) => ({
-        from: 'county_handler',
-        to: `dept-${department.id}`,
-      })),
-      ...departments.map((department, index) => ({
-        from: `dept-${department.id}`,
-        to: `dept-${departments[(index + 1) % departments.length].id}`,
-      })),
-      ...departments.map((department) => ({
-        from: `dept-${department.id}`,
-        to: 'end',
-      })),
+      ...(order.status === OrderStatus.PENDING
+        ? []
+        : routeDepartmentIds.map((departmentId) => ({
+            from: 'county_handler',
+            to: `dept-${departmentId}`,
+          }))),
+      ...(order.status === OrderStatus.PENDING
+        ? []
+        : routeDepartmentIds.map((departmentId) => ({
+            from: `dept-${departmentId}`,
+            to: 'end',
+          }))),
     ];
 
     return {
@@ -767,6 +777,8 @@ export class OrdersService {
       statusText: this.getStatusText(order),
       creatorId: order.creatorId,
       creatorName: creator?.name || '未知用户',
+      creatorUsername: creator?.username || null,
+      creatorRole: creator?.role || null,
       creatorCountyId: order.creatorCountyId,
       creatorCountyName: creatorCounty?.name || null,
       creatorDepartmentId: order.creatorDepartmentId,

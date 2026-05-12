@@ -285,8 +285,7 @@ export default function TicketDetail({ id, navigate, user, refs, onChanged }: Ti
     user.role === 'city_head' &&
     (ticket.permissions.canProcess ||
       assignedCityDepartmentIds.includes(user.departmentId || -1) ||
-      ticket.currentDepartmentId === user.departmentId ||
-      ticket.currentDepartmentId == null);
+      ticket.currentDepartmentId === user.departmentId);
   const canDepartmentComplete =
     ticket.status === 'in_progress' &&
     user.role === 'city_head' &&
